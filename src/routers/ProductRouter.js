@@ -63,10 +63,27 @@ async function getAllProductHandler(req, res) {
     // sorting -> increarsing 
     // selecting -> (name,price)
 }
+async function insertMany(req,res)
+{
+    const arr = req.body;
+    let log =`will add ${arr.length} items\n`
+    arr.forEach(async p=>{
 
-ProductRouter.post("/", checkInput,
-    protectRouteMiddleWare, isAuthorizedMiddleWare(['admin', 'seller']),
+        await ProductModel.create(p);
+        console.log( `${p.name} aaded`);
+
+    })
+
+    res.status(200).json({
+        message:log,
+        status: "success"
+    })
+
+}
+ProductRouter.post("/", //checkInput,
+   // protectRouteMiddleWare, isAuthorizedMiddleWare(['admin', 'seller']),
     createProductHandler);
+ProductRouter.post("/insertMany",insertMany);
 ProductRouter.get("/", getAllProductHandler);
 ProductRouter.get('/categories', getProductCategories);
 ProductRouter.get("/:elementId", getProductById);

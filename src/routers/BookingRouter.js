@@ -2,19 +2,21 @@ const express = require("express");
 const shortid = require('shortid');
 
 
-const Razorpay = require("razorpay");
+//const Razorpay = require("razorpay");
 const BookingModel = require("../models/BookingModel");
 const { protectRouteMiddleWare } = require("../controllers/AuthController");
 const UserModel = require("../models/UserModel");
+const PaymentAdapter = require("../utils/paymentAdapter");
 
 const BookingRouter = express.Router();
-
+const paymentGatewayInstance = new PaymentAdapter()
+/*
 const { PUBLIC_KEY, PRIVATE_KEY, WEBHOOK_SECRET } = process.env;
 const razorpayInstance = new Razorpay({
     key_id: PUBLIC_KEY,
     key_secret: PRIVATE_KEY,
 });
-
+*/
 const initialBookingController = async (req, res) => {
 
     const userId = req.userId;
@@ -50,10 +52,12 @@ const initialBookingController = async (req, res) => {
             amount: amount * 100,  // amount in the smallest currency unit
             currency: currency,
             receipt: bookingObj['_id'],
+            name : bookingObj.product.name,
+            description : bookingObj.product.description,
             payment_capture: payment_capture
         };
 
-        const orderObj = await razorpayInstance.orders.create(options);
+        const orderObj = await paymentGatewayInstance.getOrder(options);//razorpayInstance.orders.create(options);
 
         bookingObj.orderId = orderObj.id;
 

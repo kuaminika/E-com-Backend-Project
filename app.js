@@ -19,7 +19,7 @@ const port = PORT;
 
 const dbURL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${MONGO_DB_DOMAIN}/?retryWrites=true&w=majority&appName=Cluster0`;
 
-
+console.log(`mongo conenct info:${dbURL}`);
 
 // once 
 mongoose.connect(dbURL)
